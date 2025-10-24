@@ -1,20 +1,92 @@
+import React, { useEffect, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Provider as PaperProvider } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { View, Text, ActivityIndicator } from 'react-native';
+
+// Pantallas
+import DashboardScreen from './src/screens/DashboardScreen';
+import HistoryScreen from './src/screens/HistoryScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
+
+const Tab = createBottomTabNavigator();
+
+// Componente de carga SEGURO
+const AppLoading = () => (
+  <View style={{ 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center',
+    backgroundColor: '#F6F8D5'
+  }}>
+    <Text style={{ color: '#205781', fontSize: 18 }}>Inicializando HydroSafe...</Text>
+    <ActivityIndicator size="large" color="#205781" style={{ marginTop: 20 }} />
+  </View>
+);
 
 export default function App() {
+  const [isAppReady, setIsAppReady] = useState(false);
+
+  useEffect(() => {
+    // Simular inicialización
+    setTimeout(() => {
+      setIsAppReady(true);
+    }, 2000);
+  }, []);
+
+  if (!isAppReady) {
+    return (
+      <PaperProvider>
+        <AppLoading />
+      </PaperProvider>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <PaperProvider>
+      <NavigationContainer>
+        <StatusBar style="auto" />
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName: any = 'help';
+
+              if (route.name === 'Dashboard') {
+                iconName = focused ? 'speedometer' : 'speedometer-outline';
+              } else if (route.name === 'Historial') {
+                iconName = focused ? 'time' : 'time-outline';
+              } else if (route.name === 'Configuración') {
+                iconName = focused ? 'settings' : 'settings-outline';
+              }
+
+              return <Ionicons name={iconName} size={size} color={color} />;
+            },
+            tabBarActiveTintColor: '#205781',
+            tabBarInactiveTintColor: '#4F959D',
+            tabBarStyle: {
+              backgroundColor: '#F6F8D5',
+            },
+          })}
+        >
+          <Tab.Screen 
+            name="Dashboard" 
+            component={DashboardScreen}
+            options={{ title: 'Estado Actual' }}
+          />
+          <Tab.Screen 
+            name="Historial" 
+            component={HistoryScreen}
+            options={{ title: 'Historial' }}
+          />
+          <Tab.Screen 
+            name="Configuración" 
+            component={SettingsScreen}
+            options={{ title: 'Configuración' }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </PaperProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
