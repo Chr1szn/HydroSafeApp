@@ -5,7 +5,7 @@ export default function SettingsScreen() {
 return (
     <View style={styles.container}>
         <Text style={styles.title}>⚙️ Configuración</Text>
-        <Text style={styles.subtitle}>Práctica 7 - Diseño de Interfaz</Text>
+        <Text style={styles.subtitle}>Práctica 8 - Diseño de interfaz y código</Text>
         <View style={styles.card}>
         <Text>Aquí irá la configuración de la app</Text>
         </View>

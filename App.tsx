@@ -47,7 +47,7 @@ export default function App() {
   return (
     <PaperProvider>
       <NavigationContainer>
-        <StatusBar style="auto" />
+        <StatusBar style="light" /> {/* SE PONE LA BARRA DE NOTIFICACIONES DE COLOR TRANSPARENTE */}
         <Tab.Navigator
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
@@ -57,16 +57,24 @@ export default function App() {
                 iconName = focused ? 'speedometer' : 'speedometer-outline';
               } else if (route.name === 'Historial') {
                 iconName = focused ? 'time' : 'time-outline';
-              } else if (route.name === 'Configuración') {
+              } else if (route.name === 'Configuración') { 
                 iconName = focused ? 'settings' : 'settings-outline';
               }
 
               return <Ionicons name={iconName} size={size} color={color} />;
             },
-            tabBarActiveTintColor: '#205781',
-            tabBarInactiveTintColor: '#4F959D',
+            tabBarActiveTintColor: '#ffffffff', // 205781
+            tabBarInactiveTintColor: '#ffffffff', //4F959D
             tabBarStyle: {
-              backgroundColor: '#F6F8D5',
+                backgroundColor: '#000000ff', //F6F8D5
+            },
+            // CAMBIAR COLOR DELHEADER:
+            headerStyle: {
+              backgroundColor: '#000000ff', // Mismo color que tu tab bar
+            },
+            headerTintColor: '#ffffffff', // Color del texto blanco
+            headerTitleStyle: {
+                fontWeight: 'bold',
             },
           })}
         >

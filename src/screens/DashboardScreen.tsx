@@ -1,26 +1,137 @@
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, StyleSheet, Alert } from 'react-native';
+import { Button, Card } from 'react-native-paper';
+import { Linking } from 'react-native';
+import WaterCard from '../components/WaterCard';
+import { WaterQualityData } from '../types';
 
 export default function DashboardScreen() {
+const [currentData, setCurrentData] = useState<WaterQualityData>({
+    pH: 7.4,
+    ORP: 680,
+    temperature: 28,
+    status: 'optimal',
+    timestamp: new Date().toISOString()
+});
+
+const sendWhatsAppReport = () => {
+    const message = `🏊 *HydroSafe Reporte*\n
+📅 ${new Date().toLocaleDateString()}\n
+🌊 *pH:* ${currentData.pH}
+🧪 *ORP:* ${currentData.ORP} mV
+🌡️ *Temperatura:* ${currentData.temperature}°C\n
+✅ *Estado:* ${currentData.status === 'optimal' ? 'DENTRO DEL RANGO' : 'FUERA DE RANGO'}\n
+_Enviado desde HydroSafe App_`;
+
+    const url = `whatsapp://send?text=${encodeURIComponent(message)}`;
+    
+    Linking.canOpenURL(url).then(supported => {
+    if (supported) {
+        Linking.openURL(url);
+    } else {
+        Alert.alert('Error', 'WhatsApp no está instalado');
+    }
+    });
+};
+
+const getStatus = (ph: number, orp: number, temp: number): 'optimal' | 'warning' | 'danger' => {
+    if (ph >= 7.2 && ph <= 7.6 && orp >= 650 && orp <= 750 && temp >= 25 && temp <= 30) {
+    return 'optimal';
+    } else if (ph < 6.8 || ph > 7.8 || orp < 600 || orp > 800 || temp < 20 || temp > 35) {
+    return 'danger';
+    } else {
+        return 'warning';
+    }
+};
+
+  // Simular cambios en los datos (para demo)
+useEffect(() => {
+    const interval = setInterval(() => {
+    setCurrentData(prev => ({
+        ...prev,
+        pH: Number((7.2 + Math.random() * 0.6).toFixed(1)),
+        ORP: Math.floor(640 + Math.random() * 120),
+        temperature: Math.floor(26 + Math.random() * 6),
+        timestamp: new Date().toISOString()
+    }));
+    }, 5000);
+
+    return () => clearInterval(interval);
+}, []);
+
+  // Actualizar status cuando cambien los datos
+useEffect(() => {
+    const status = getStatus(currentData.pH, currentData.ORP, currentData.temperature);
+    setCurrentData(prev => ({ ...prev, status }));
+}, [currentData.pH, currentData.ORP, currentData.temperature]);
+
 return (
     <ScrollView style={styles.container}>
-        <Text style={styles.title}>🏊 HydroSafe</Text>
-        <Text style={styles.subtitle}>Dashboard Principal</Text>
+    <Text style={styles.title}>🏊 HydroSafe</Text>
+    <Text style={styles.subtitle}>Dashboard Principal</Text>
     
-        <View style={styles.card}>
-        <Text style={styles.cardTitle}>Estado Actual</Text>
-        <Text>pH: 7.4 ✅</Text>
-        <Text>ORP: 680 mV ✅</Text>
-        <Text>Temperatura: 28°C 🔵</Text>
+    <Card style={styles.summaryCard}>
+        <Card.Content>
+            <Text style={styles.summaryTitle}>Resumen del Sistema</Text>
+            <Text style={styles.timestamp}>
+            Última actualización: {new Date(currentData.timestamp).toLocaleTimeString()}
+            </Text>
+        </Card.Content>
+    </Card>
+
+    <WaterCard 
+        parameter="pH"
+        value={currentData.pH}
+        status={currentData.status}
+        unit=""
+    />
+    
+    <WaterCard 
+        parameter="ORP (Cloro)"
+        value={currentData.ORP}
+        status={currentData.status}
+        unit="mV"
+    />
+    
+    <WaterCard 
+        parameter="Temperatura"
+        value={currentData.temperature}
+        status={currentData.status}
+        unit="°C"
+    />
+
+    <Button 
+        mode="contained" 
+        onPress={sendWhatsAppReport}
+        style={styles.whatsappButton}
+        icon="whatsapp"
+        >
+        📤 Enviar Reporte por WhatsApp
+        </Button>
+
+        <View style={styles.legend}>
+        <Text style={styles.legendTitle}>Leyenda:</Text>
+        <Text>✅ Óptimo | ⚠️ Advertencia | ❌ Peligro</Text>
         </View>
     </ScrollView>
     );
 }
 
+//***************************
+// AÑADE ESTO AL FINAL DEL ARCHIVO, antes del export default
+DashboardScreen.navigationOptions = {
+    headerStyle: {
+        backgroundColor: '#024215ff', // Mismo color de fondo que tu app
+    },
+        headerTintColor: '#420664ff', // Color del texto (opcional)
+        headerTitleStyle: {
+        fontWeight: 'bold',
+    },
+};
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
         backgroundColor: '#F6F8D5',
     },
     title: {
@@ -28,6 +139,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#205781',
         textAlign: 'center',
+        marginTop: 16,
         marginBottom: 8,
     },
     subtitle: {
@@ -36,17 +148,36 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 20,
     },
-    card: {
-        backgroundColor: 'white',
-        padding: 16,
-        borderRadius: 12,
-        borderColor: '#98D2C0',
-        borderWidth: 2,
+    summaryCard: {
+        margin: 16,
+        backgroundColor: '#ffffffff',
+        elevation: 3,
     },
-    cardTitle: {
+    summaryTitle: {
         fontSize: 18,
         fontWeight: 'bold',
         color: '#205781',
-        marginBottom: 8,
+    },
+    timestamp: {
+        fontSize: 12,
+        color: '#666',
+        marginTop: 4,
+    },
+    whatsappButton: {
+        margin: 16,
+        backgroundColor: '#25D366',
+        paddingVertical: 8,
+    },
+    legend: {
+        margin: 16,
+        padding: 12,
+        backgroundColor: '#ffffffff',
+        borderRadius: 8,
+        alignItems: 'center',
+    },
+    legendTitle: {
+        fontWeight: 'bold',
+        marginBottom: 4,
+        color: '#205781',
     },
 });
