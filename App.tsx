@@ -8,6 +8,8 @@ import { View, Text, ActivityIndicator } from 'react-native';
 
 // Pantallas
 import DashboardScreen from './src/screens/DashboardScreen';
+import AlertsScreen from './src/screens/AlertsScreen'; // Nueva pantalla
+import SearchScreen from './src/screens/SearchScreen'; // nueva
 import HistoryScreen from './src/screens/HistoryScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 
@@ -55,6 +57,8 @@ export default function App() {
 
               if (route.name === 'Dashboard') {
                 iconName = focused ? 'speedometer' : 'speedometer-outline';
+              } else if (route.name === 'Alertas') {
+                iconName = focused ? 'warning' : 'warning-outline';
               } else if (route.name === 'Historial') {
                 iconName = focused ? 'time' : 'time-outline';
               } else if (route.name === 'Configuración') { 
@@ -68,7 +72,7 @@ export default function App() {
             tabBarStyle: {
                 backgroundColor: '#000000ff', //F6F8D5
             },
-            // CAMBIAR COLOR DELHEADER:
+            // CAMBIAR COLOR DEL HEADER:
             headerStyle: {
               backgroundColor: '#000000ff', // Mismo color que tu tab bar
             },
@@ -78,10 +82,28 @@ export default function App() {
             },
           })}
         >
+          <Tab.Screen  //busqueda
+            name="Búsqueda" 
+            component={SearchScreen}
+            options={{
+              tabBarIcon: ({ focused, color, size }) => (
+                <Ionicons 
+                  name={focused ? 'search' : 'search-outline'} 
+                  size={size} 
+                  color={color} 
+                />
+              ),
+            }}
+          />
           <Tab.Screen 
             name="Dashboard" 
             component={DashboardScreen}
             options={{ title: 'Estado Actual' }}
+          />
+          <Tab.Screen 
+            name="Alertas" 
+            component={AlertsScreen}
+            options={{ title: 'Alertas' }}
           />
           <Tab.Screen 
             name="Historial" 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, Alert } from 'react-native';
-import { Button, Card } from 'react-native-paper';
+import { View, Text, ScrollView, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { Card } from 'react-native-paper';
 import { Linking } from 'react-native';
 import WaterCard from '../components/WaterCard';
 import { WaterQualityData } from '../types';
@@ -36,9 +36,9 @@ _Enviado desde HydroSafe App_`;
 
 const getStatus = (ph: number, orp: number, temp: number): 'optimal' | 'warning' | 'danger' => {
     if (ph >= 7.2 && ph <= 7.6 && orp >= 650 && orp <= 750 && temp >= 25 && temp <= 30) {
-    return 'optimal';
+        return 'optimal';
     } else if (ph < 6.8 || ph > 7.8 || orp < 600 || orp > 800 || temp < 20 || temp > 35) {
-    return 'danger';
+        return 'danger';
     } else {
         return 'warning';
     }
@@ -67,15 +67,13 @@ useEffect(() => {
 
 return (
     <ScrollView style={styles.container}>
-    <Text style={styles.title}>🏊 HydroSafe</Text>
-    <Text style={styles.subtitle}>Dashboard Principal</Text>
+        <Text style={styles.title}>🏊 HydroSafe</Text>
+        <Text style={styles.subtitle}>Dashboard Principal</Text>
     
     <Card style={styles.summaryCard}>
         <Card.Content>
             <Text style={styles.summaryTitle}>Resumen del Sistema</Text>
-            <Text style={styles.timestamp}>
-            Última actualización: {new Date(currentData.timestamp).toLocaleTimeString()}
-            </Text>
+            <Text style={styles.timestamp}>Última actualización: {new Date(currentData.timestamp).toLocaleTimeString()}</Text>
         </Card.Content>
     </Card>
 
@@ -100,84 +98,81 @@ return (
         unit="°C"
     />
 
-    <Button 
-        mode="contained" 
-        onPress={sendWhatsAppReport}
+    <TouchableOpacity 
         style={styles.whatsappButton}
-        icon="whatsapp"
-        >
-        📤 Enviar Reporte por WhatsApp
-        </Button>
+        onPress={sendWhatsAppReport}
+    >
+        <Text style={styles.whatsappButtonText}>
+            📤 Enviar Reporte por WhatsApp
+        </Text>
+    </TouchableOpacity>
 
         <View style={styles.legend}>
-        <Text style={styles.legendTitle}>Leyenda:</Text>
-        <Text>✅ Óptimo | ⚠️ Advertencia | ❌ Peligro</Text>
+            <Text style={styles.legendTitle}>Leyenda:</Text>
+            <Text>✅ Óptimo | ⚠️ Advertencia | ❌ Peligro</Text>
         </View>
     </ScrollView>
     );
 }
 
-//***************************
-// AÑADE ESTO AL FINAL DEL ARCHIVO, antes del export default
-DashboardScreen.navigationOptions = {
-    headerStyle: {
-        backgroundColor: '#024215ff', // Mismo color de fondo que tu app
-    },
-        headerTintColor: '#420664ff', // Color del texto (opcional)
-        headerTitleStyle: {
-        fontWeight: 'bold',
-    },
-};
-
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#F6F8D5',
+    flex: 1,
+    backgroundColor: '#F6F8D5',
     },
     title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#205781',
-        textAlign: 'center',
-        marginTop: 16,
-        marginBottom: 8,
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#205781',
+    textAlign: 'center',
+    marginTop: 16,
+    marginBottom: 8,
     },
     subtitle: {
-        fontSize: 16,
-        color: '#4F959D',
-        textAlign: 'center',
-        marginBottom: 20,
+    fontSize: 16,
+    color: '#4F959D',
+    textAlign: 'center',
+    marginBottom: 20,
     },
     summaryCard: {
-        margin: 16,
-        backgroundColor: '#ffffffff',
-        elevation: 3,
+    margin: 16,
+    backgroundColor: '#ffffff',
+    elevation: 3,
     },
     summaryTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#205781',
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#205781',
     },
     timestamp: {
-        fontSize: 12,
-        color: '#666',
-        marginTop: 4,
+    fontSize: 12,
+    color: '#666',
+    marginTop: 4,
     },
     whatsappButton: {
-        margin: 16,
-        backgroundColor: '#25D366',
-        paddingVertical: 8,
+    margin: 16,
+    backgroundColor: '#25D366',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    },
+    whatsappButtonText: {
+    color: 'white', 
+    fontWeight: 'bold',
+    fontSize: 16,
     },
     legend: {
-        margin: 16,
-        padding: 12,
-        backgroundColor: '#ffffffff',
-        borderRadius: 8,
-        alignItems: 'center',
+    margin: 16,
+    padding: 12,
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
+    alignItems: 'center',
     },
     legendTitle: {
-        fontWeight: 'bold',
-        marginBottom: 4,
-        color: '#205781',
+    fontWeight: 'bold',
+    marginBottom: 4,
+    color: '#205781',
     },
 });

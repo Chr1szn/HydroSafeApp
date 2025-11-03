@@ -31,15 +31,13 @@ const getStatusEmoji = () => {
 return (
     <Card style={[styles.card, { borderLeftColor: getStatusColor() }]}>
         <Card.Content>
-        <View style={styles.header}>
-            <Text style={styles.parameter}>{parameter}</Text>
-            <Text style={[styles.status, { color: getStatusColor() }]}>
-            {getStatusEmoji()} {status.toUpperCase()}
-            </Text>
-        </View>
-        <Text style={styles.value}>
-            {value} {unit}
-        </Text>
+            <View style={styles.header}>
+                <Text style={styles.parameter}>{parameter}</Text>
+                <Text style={[styles.status, { color: getStatusColor() }]}>
+                {getStatusEmoji()} {status.toUpperCase()}
+                </Text>
+            </View>
+            <Text style={styles.value}>{value} {unit}</Text>
         </Card.Content>
     </Card>
     );
