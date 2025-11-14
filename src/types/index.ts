@@ -1,5 +1,5 @@
 export interface WaterQualityData {
-    id?: number;
+    id?: string; //number
     pH: number;
     ORP: number;
     temperature: number;

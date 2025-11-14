@@ -1,3 +1,4 @@
+// App.tsx
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,14 +9,15 @@ import { View, Text, ActivityIndicator } from 'react-native';
 
 // Pantallas
 import DashboardScreen from './src/screens/DashboardScreen';
-import AlertsScreen from './src/screens/AlertsScreen'; // Nueva pantalla
-import SearchScreen from './src/screens/SearchScreen'; // nueva
+import AlertsScreen from './src/screens/AlertsScreen';
 import HistoryScreen from './src/screens/HistoryScreen';
+import SearchScreen from './src/screens/SearchScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
+import AnalysisScreen from './src/screens/AnalysisScreen';
 
 const Tab = createBottomTabNavigator();
 
-// Componente de carga SEGURO
+// Componente de carga
 const AppLoading = () => (
   <View style={{ 
     flex: 1, 
@@ -32,7 +34,6 @@ export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
 
   useEffect(() => {
-    // Simular inicialización
     setTimeout(() => {
       setIsAppReady(true);
     }, 2000);
@@ -49,7 +50,7 @@ export default function App() {
   return (
     <PaperProvider>
       <NavigationContainer>
-        <StatusBar style="light" /> {/* SE PONE LA BARRA DE NOTIFICACIONES DE COLOR TRANSPARENTE */}
+        <StatusBar style="light" />
         <Tab.Navigator
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
@@ -61,40 +62,30 @@ export default function App() {
                 iconName = focused ? 'warning' : 'warning-outline';
               } else if (route.name === 'Historial') {
                 iconName = focused ? 'time' : 'time-outline';
+              } else if (route.name === 'Búsqueda') {
+                iconName = focused ? 'search' : 'search-outline';
+              } else if (route.name === 'Análisis') {
+                iconName = focused ? 'analytics' : 'analytics-outline';
               } else if (route.name === 'Configuración') { 
                 iconName = focused ? 'settings' : 'settings-outline';
               }
 
               return <Ionicons name={iconName} size={size} color={color} />;
             },
-            tabBarActiveTintColor: '#ffffffff', // 205781
-            tabBarInactiveTintColor: '#ffffffff', //4F959D
+            tabBarActiveTintColor: '#ffffffff',
+            tabBarInactiveTintColor: '#ffffffff',
             tabBarStyle: {
-                backgroundColor: '#000000ff', //F6F8D5
+              backgroundColor: '#000000ff',
             },
-            // CAMBIAR COLOR DEL HEADER:
             headerStyle: {
-              backgroundColor: '#000000ff', // Mismo color que tu tab bar
+              backgroundColor: '#000000ff',
             },
-            headerTintColor: '#ffffffff', // Color del texto blanco
+            headerTintColor: '#ffffffff',
             headerTitleStyle: {
-                fontWeight: 'bold',
+              fontWeight: 'bold',
             },
           })}
         >
-          <Tab.Screen  //busqueda
-            name="Búsqueda" 
-            component={SearchScreen}
-            options={{
-              tabBarIcon: ({ focused, color, size }) => (
-                <Ionicons 
-                  name={focused ? 'search' : 'search-outline'} 
-                  size={size} 
-                  color={color} 
-                />
-              ),
-            }}
-          />
           <Tab.Screen 
             name="Dashboard" 
             component={DashboardScreen}
@@ -109,6 +100,16 @@ export default function App() {
             name="Historial" 
             component={HistoryScreen}
             options={{ title: 'Historial' }}
+          />
+          <Tab.Screen 
+            name="Búsqueda" 
+            component={SearchScreen}
+            options={{ title: 'Búsqueda' }}
+          />
+          <Tab.Screen 
+            name="Análisis" 
+            component={AnalysisScreen}
+            options={{ title: 'Análisis' }}
           />
           <Tab.Screen 
             name="Configuración" 
